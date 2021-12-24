@@ -14,6 +14,7 @@ const nextStart: cliCommand = (argv) => {
     '--help': Boolean,
     '--port': Number,
     '--hostname': String,
+    '--keep-alive-timeout': Number,
 
     // Aliases
     '-h': '--help',
@@ -42,9 +43,10 @@ const nextStart: cliCommand = (argv) => {
       If no directory is provided, the current directory will be used.
 
       Options
-        --port, -p      A port number on which to start the application
-        --hostname, -H  Hostname on which to start the application (default: 0.0.0.0)
-        --help, -h      Displays this message
+        --port, -p            A port number on which to start the application
+        --hostname, -H        Hostname on which to start the application (default: 0.0.0.0)
+        --keep-alive-timeout  Value for http server's keepAliveTimeout config
+        --help, -h            Displays this message
     `)
     process.exit(0)
   }
@@ -58,10 +60,13 @@ const nextStart: cliCommand = (argv) => {
     port = 0
   }
 
+  const keepAliveTimeout = args['--keep-alive-timeout']
+
   startServer({
     dir,
     hostname: host,
     port,
+    keepAliveTimeout,
   })
     .then(async (app) => {
       const appUrl = `http://${app.hostname}:${app.port}`
